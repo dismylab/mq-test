@@ -1,0 +1,15 @@
+name: ci
+on:
+  pull_request:
+  merge_group:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Gives time to remove a PR from the queue manually (reason: manual)
+      - run: sleep 60
+      # Fails only inside the merge queue when FAIL_IN_QUEUE exists (reason: failed_checks)
+      - name: Fail in queue if FAIL_IN_QUEUE exists
+        if: github.event_name == 'merge_group'
+        run: test ! -f FAIL_IN_QUEUE
